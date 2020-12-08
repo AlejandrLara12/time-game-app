@@ -1,8 +1,11 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
+    <b-alert :show='reachedShiftTimeLimit' variant="danger">Time is up</b-alert>
+    <p>shiftTimeLimit {{ shiftTimeLimit }} ms</p>
+    <!-- <img alt="Vue logo" src="../assets/logo.png"> -->
 
     <PlayersForm />
+    <p>reachedShiftTimeLimit {{ reachedShiftTimeLimit }}</p>
     <p>duration: {{currentDuration}} ms</p>
     <b-button @click="handleStart">Start</b-button>
     <b-button @click="handlePause">Pause</b-button>
@@ -31,6 +34,7 @@ export default {
         color: '#1CA085',
       },
       currentDuration: 0,
+      reachedShiftTimeLimit: false,
       sw: new Stopwatch(),
       timerInterval: null,
     }
@@ -42,6 +46,7 @@ export default {
       this.timerInterval = setInterval(() => {
         // console.log('dur ... ')
         this.currentDuration = this.sw.current
+        this.reachedShiftTimeLimit = this.currentDuration > this.shiftTimeLimit
       }, 100)
     },
     handlePause() {
@@ -50,6 +55,8 @@ export default {
     },
     handleReset() {
       this.sw.reset()
+      this.currentDuration = 0
+      this.reachedShiftTimeLimit = false
       clearInterval(this.timerInterval)
     },
     handleNextPlayer() {
@@ -64,6 +71,8 @@ export default {
         return
       }
       this.sw.reset()
+      this.currentDuration = 0
+      this.reachedShiftTimeLimit = false
       this.handleStart()
     },
   },
@@ -73,7 +82,7 @@ export default {
   //   }
   // },
   computed: {
-    ...mapState(['limitOfPlayers', 'players']),
+    ...mapState(['limitOfPlayers', 'players', 'shiftTimeLimit']),
   }
 }
 </script>

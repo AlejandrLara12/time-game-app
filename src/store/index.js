@@ -1,3 +1,4 @@
+import moment from 'moment'
 import Vue from 'vue'
 import Vuex from 'vuex'
 
@@ -11,6 +12,7 @@ export default new Vuex.Store({
       { name: 'Player 2', color: '#2980B9' },
     ],
     limitOfPlayers: 16,
+    shiftTimeLimit: moment.duration(2, 'seconds').asMilliseconds() , // as miliseconds
   },
   mutations: {
     increment (state, payload) {
@@ -25,6 +27,9 @@ export default new Vuex.Store({
     },
     removePlayer (state, { index }) {
       state.players = state.players.filter( (p, idx) => idx !== index)
+    },
+    setShiftTimeLimit (state, { duration }) {
+      state.shiftTimeLimit = moment.duration(duration).asMilliseconds()
     },
   },
   actions: {
