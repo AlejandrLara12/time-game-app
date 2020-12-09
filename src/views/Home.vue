@@ -2,30 +2,28 @@
   <div class="home">
     <b-alert :show='reachedShiftTimeLimit' variant="danger">Time is up</b-alert>
     <p>shiftTimeLimit {{ shiftTimeLimit }} ms</p>
-    <!-- <img alt="Vue logo" src="../assets/logo.png"> -->
-
     <PlayersForm />
-    <p>reachedShiftTimeLimit {{ reachedShiftTimeLimit }}</p>
-    <p>duration: {{currentDuration}} ms</p>
-    <b-button @click="handleStart">Start</b-button>
-    <b-button @click="handlePause">Pause</b-button>
-    <b-button @click="handleReset">Reset</b-button>
-    <b-button @click="handleNextPlayer">Next Player</b-button>
+    <router-link :to="{ name: 'Settings' }">
+      <b-button class="">
+        Continue
+        <b-icon class="ml-2" icon="arrow-right-circle-fill" aria-hidden="true"></b-icon>
+      </b-button>
+    </router-link>
   </div>
 </template>
 
 <script>
 import { mapState, mapMutations } from 'vuex'
-// import Landing from "./components/Landing";
 
 // @ is an alias to /src
 import PlayersForm from '@/components/PlayersForm.vue'
+
 import Stopwatch from '@/classes/Stopwatch'
 
 export default {
   name: 'Home',
   components: {
-    PlayersForm
+    PlayersForm,
   },
   data() {
     return {
@@ -34,6 +32,7 @@ export default {
         color: '#1CA085',
       },
       currentDuration: 0,
+      // percentageOfTimeLeft: 0,
       reachedShiftTimeLimit: false,
       sw: new Stopwatch(),
       timerInterval: null,
@@ -42,12 +41,13 @@ export default {
   methods: {
     ...mapMutations(['addPlayer', 'removePlayer']),
     handleStart() {
+      const INTERVAL_MS = 100
       this.sw.start()
       this.timerInterval = setInterval(() => {
         // console.log('dur ... ')
         this.currentDuration = this.sw.current
         this.reachedShiftTimeLimit = this.currentDuration > this.shiftTimeLimit
-      }, 100)
+      }, INTERVAL_MS)
     },
     handlePause() {
       this.sw.stop()
@@ -76,13 +76,24 @@ export default {
       this.handleStart()
     },
   },
-  // watch: {
-  //   'sw.current': function(v) {
-  //     console.log('watch', v)
-  //   }
-  // },
+  watch: {
+    // 'currentDuration': function(v) {
+    //   // console.log('watch', v)
+    //   let percentage = v * 100 / this.shiftTimeLimit
+    //   console.log('perc .. ', percentage)
+    //   percentage = percentage > 100 ? 100 : percentage
+    //   // return percentage
+    //   this.percentageOfTimeLeft = percentage
+    // },
+  },
   computed: {
     ...mapState(['limitOfPlayers', 'players', 'shiftTimeLimit']),
+    percentageOfTimeLeft() {
+      let percentage = this.currentDuration * 100 / this.shiftTimeLimit
+      console.log('perc .. ', percentage)
+      percentage = percentage > 100 ? 100 : percentage
+      return percentage
+    },
   }
 }
 </script>

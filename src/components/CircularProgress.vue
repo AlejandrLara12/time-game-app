@@ -34,7 +34,7 @@
 </template>
 <script>
 export default {
-  name: 'circular-progress',
+  name: 'CircularProgress',
   props: {
     strokeWidth: {
       type: Number,
@@ -120,9 +120,11 @@ export default {
     },
     countNumber(v) {
       this.offset = "";
-      this.initTimeoutHandler = setTimeout(() => {
-        this.offset = (this.circumference * (100 - v)) / 100;
-      }, 100);
+      // this.initTimeoutHandler = setTimeout(() => {
+      //   this.offset = (this.circumference * (100 - v)) / 100;
+      // }, 100);
+      this.offset = (this.circumference * (100 - v)) / 100;
+
       if (this.$slots.default) return;
       let [int, dec] = v.toString().split(".");
       // fallback for NaN
@@ -145,6 +147,7 @@ export default {
   watch: {
     value: {
       handler: function(v) {
+        // console.log('watch value', v)
         const n = Number(v);
         if (Number.isNaN(n) || n === 0) {
           return;
