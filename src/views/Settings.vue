@@ -16,7 +16,7 @@
           </b-card>
         </b-tab>
         <b-tab title="Custom settings">
-          Turn duration
+          Turns limit
           <b-form-spinbutton 
           v-model="turnsLimit" 
           min="0" max="999" 
@@ -26,8 +26,6 @@
 
           <label for="shiftTimeLimitRange">Turn duration {{ shiftTimeLimit }} form {{ formShiftTimeLimit }}</label>
 
-          <p>current time {{ time }}</p>
-          
           <v-row>
             <v-col
               cols="11"
@@ -35,15 +33,15 @@
             >
               <v-dialog
                 ref="dialog"
-                v-model="modal2"
-                :return-value.sync="time"
+                v-model="clockModal"
+                :return-value.sync="formShiftTimeLimit"
                 persistent
                 width="290px"
               >
                 <template v-slot:activator="{ on, attrs }">
                   <v-text-field
-                    v-model="time"
-                    label="Picker in dialog"
+                    v-model="formShiftTimeLimit"
+                    label="Shift limit time"
                     prepend-icon="mdi-clock-time-four-outline"
                     readonly
                     v-bind="attrs"
@@ -51,26 +49,27 @@
                   ></v-text-field>
                 </template>
                 <v-time-picker
-                  v-if="modal2"
-                  v-model="time"
+                  v-if="clockModal"
+                  v-model="formShiftTimeLimit"
                   full-width
                   ampm-in-title
                   format="24hr"
                   scrollable
                   use-seconds
+                  @input="handleTimeInput"
                 >
                   <v-spacer></v-spacer>
                   <v-btn
                     text
                     color="primary"
-                    @click="modal2 = false"
+                    @click="clockModal = false"
                   >
                     Cancel
                   </v-btn>
                   <v-btn
                     text
                     color="primary"
-                    @click="$refs.dialog.save(time)"
+                    @click="$refs.dialog.save(formShiftTimeLimit)"
                   >
                     OK
                   </v-btn>
@@ -105,6 +104,7 @@
 
 <script>
 import { mapMutations, mapState } from 'vuex';
+import moment from 'moment'
 
 export default {
   name: 'Settings',
@@ -112,11 +112,9 @@ export default {
   },
   data() {
     return {
-      time: '00:00:20',
-      menu2: false,
-      modal2: false,
+      formShiftTimeLimit: '00:00:20',
+      clockModal: false,
       tabIndex: 1,
-      formShiftTimeLimit: 0,
       turnsLimit: 0,
     }
   },
@@ -126,21 +124,30 @@ export default {
       if(value === 0) return '∞'
       return value
     },
-    timeFormatter(value){
+    twoDigitsFormatter(value){
       let str = value + ''
       if(str.length == 2) return str
       return `0${str}`
     },
-  },
-  watch: {
-    formShiftTimeLimit(v) {
-      console.log('new duration', v)
-      this.setShiftTimeLimit({ duration: v * 1000 })
-    }
+    handleTimeInput(newDuration){
+      // console.log('time selected', newDuration)
+      const duration = moment.duration(newDuration).asMilliseconds()
+      // console.log('duration', duration)
+      this.setShiftTimeLimit({ duration })
+    },
   },
   mounted() {
     // init from with state
-    this.formShiftTimeLimit = this.shiftTimeLimit / 1000
+
+    // 1000ms => '00:00:01'
+    const currentDuration = moment.duration(this.shiftTimeLimit)
+    const hrs = currentDuration.hours();
+    const min = currentDuration.minutes();
+    const sec = currentDuration.seconds();
+
+    const formattedTime = `${this.twoDigitsFormatter(hrs)}:${this.twoDigitsFormatter(min)}:${this.twoDigitsFormatter(sec)}`
+    console.log('mounted duration', formattedTime)
+    this.formShiftTimeLimit = formattedTime
   },
   computed: {
     ...mapState(['shiftTimeLimit']),
