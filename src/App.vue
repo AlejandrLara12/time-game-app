@@ -1,12 +1,17 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link :to="{ name: 'Settings' }">Settings</router-link> |
-      <router-link :to="{ name: 'Game' }">Game</router-link>
+  <v-app
+      app
+      color="primary"
+    >
+    <div id="app">
+      <div id="nav">
+        <router-link to="/">Home</router-link> |
+        <router-link :to="{ name: 'Settings' }">Settings</router-link> |
+        <router-link :to="{ name: 'Game' }">Game</router-link>
+      </div>
+      <router-view/>
     </div>
-    <router-view/>
-  </div>
+  </v-app>
 </template>
 
 

@@ -1,4 +1,5 @@
 <template>
+<v-container>
   <div class="settings">
     <h1>This is an Settings page</h1>
     
@@ -16,16 +17,68 @@
         </b-tab>
         <b-tab title="Custom settings">
           Turn duration
-          <b-card>
-            <b-form-input
-              id="example-input"
-              type="text"
-              placeholder="HH:mm:ss"
-            ></b-form-input>
-          </b-card>
+          <b-form-spinbutton 
+          v-model="turnsLimit" 
+          min="0" max="999" 
+          placeholder="∞"
+          :formatter-fn="turnsFormatter"
+          ></b-form-spinbutton>
 
           <label for="shiftTimeLimitRange">Turn duration {{ shiftTimeLimit }} form {{ formShiftTimeLimit }}</label>
-          <b-form-input id="shiftTimeLimitRange" v-model="formShiftTimeLimit" type="range" step="1" min="0" max="1200"></b-form-input>
+
+          <p>current time {{ time }}</p>
+          
+          <v-row>
+            <v-col
+              cols="11"
+              sm="5"
+            >
+              <v-dialog
+                ref="dialog"
+                v-model="modal2"
+                :return-value.sync="time"
+                persistent
+                width="290px"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="time"
+                    label="Picker in dialog"
+                    prepend-icon="mdi-clock-time-four-outline"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-time-picker
+                  v-if="modal2"
+                  v-model="time"
+                  full-width
+                  ampm-in-title
+                  format="24hr"
+                  scrollable
+                  use-seconds
+                >
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="modal2 = false"
+                  >
+                    Cancel
+                  </v-btn>
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="$refs.dialog.save(time)"
+                  >
+                    OK
+                  </v-btn>
+                </v-time-picker>
+              </v-dialog>
+            </v-col>
+          </v-row>
+
         </b-tab>
       </b-tabs>
 
@@ -46,6 +99,8 @@
     </div> -->
 
   </div>
+
+</v-container>
 </template>
 
 <script>
@@ -57,12 +112,25 @@ export default {
   },
   data() {
     return {
+      time: '00:00:20',
+      menu2: false,
+      modal2: false,
       tabIndex: 1,
       formShiftTimeLimit: 0,
+      turnsLimit: 0,
     }
   },
   methods: {
     ...mapMutations(['setShiftTimeLimit']),
+    turnsFormatter(value) {
+      if(value === 0) return '∞'
+      return value
+    },
+    timeFormatter(value){
+      let str = value + ''
+      if(str.length == 2) return str
+      return `0${str}`
+    },
   },
   watch: {
     formShiftTimeLimit(v) {
