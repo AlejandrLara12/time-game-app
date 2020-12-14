@@ -1,43 +1,52 @@
 <template>
-  <div class="game">
-    <b-alert :show='reachedShiftTimeLimit' variant="danger">Time is up</b-alert>
+  <v-container>
+    <div class="game">
+      <b-alert :show='reachedShiftTimeLimit' variant="danger">Time is up</b-alert>
 
-    <p>reachedShiftTimeLimit {{ reachedShiftTimeLimit }}</p>
-    <div>
-      <v-btn rounded @click="handleStart"> 
-          <v-icon left dark> mdi-play-circle </v-icon>
-          Start
-      </v-btn>
-      <v-btn rounded @click="handlePause"> 
-          <v-icon left dark> mdi-pause-circle </v-icon>
-          Pause
-      </v-btn>
-      <v-btn rounded @click="handleReset"> 
-          <v-icon left dark> mdi-skip-previous-circle </v-icon>
-          Reset
-      </v-btn>
-      <v-btn rounded @click="handleNextPlayer"> 
-          <v-icon left dark> mdi-skip-next-circle </v-icon>
-          Next Player
-      </v-btn>
+      <p>reachedShiftTimeLimit {{ reachedShiftTimeLimit }}</p>
+      <div class="mb-3">
+        <v-row>
+          <v-col cols="6">
+            <v-btn rounded @click="handleToggleTime" depressed block > 
+                <v-icon left dark> {{ this.sw.is_running ? 'mdi-pause-circle' : 'mdi-play-circle' }} </v-icon>
+                {{ this.sw.is_running ? 'Pause' : 'Start' }}
+            </v-btn>
+          </v-col>
+          <v-col cols="6">
+            <v-btn rounded @click="handleReset" depressed block> 
+                <v-icon left dark> mdi-skip-previous-circle </v-icon>
+                Reset
+            </v-btn>
+          </v-col>
+        </v-row>
+      </div>
+
+      <!-- <div>
+        <p>active player</p>
+        <pre>{{ activePlayer }}</pre>
+      </div> -->
+
+      <CircularProgress
+        :strokeColor="activePlayer.color"
+        :transitionDuration="100"
+        :radius="80"
+        :strokeWidth="15"
+        :value="percentageOfTimeLeft"
+        > 
+        <!-- <div>next player <br /> {{ percentageOfTimeLeft }}</div> -->
+        <p></p>
+      </CircularProgress> 
+
+      <div class="mt-5">
+        <v-btn :color="activePlayer.color" rounded @click="handleNextPlayer" block x-large text-color="white"> 
+            <v-icon left color="white"> mdi-skip-next-circle </v-icon>
+            <span style="color: white;">Next Player</span>
+        </v-btn>
+      </div>
+
     </div>
 
-    <div>
-      <p>active player</p>
-      <pre>{{ activePlayer }}</pre>
-    </div>
-
-    <CircularProgress
-      :strokeColor="activePlayer.color"
-      :transitionDuration="100"
-      :radius="80"
-      :strokeWidth="10"
-      :value="percentageOfTimeLeft"
-      > 
-      <div>next player <br /> {{ percentageOfTimeLeft }}</div>
-    </CircularProgress> 
-
-  </div>
+  </v-container>
 </template>
 
 <script>
@@ -103,6 +112,13 @@ export default {
       this.reachedShiftTimeLimit = false
       this.handleStart()
     },
+    handleToggleTime(){
+      if(this.sw.is_running){
+        this.handlePause()
+      } else {
+        this.handleStart()
+      }
+    }
   },
   watch: {
     // 'currentDuration': function(v) {
