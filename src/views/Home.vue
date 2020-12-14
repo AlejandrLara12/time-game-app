@@ -4,10 +4,20 @@
     <p>shiftTimeLimit {{ shiftTimeLimit }} ms</p>
     <PlayersForm />
     <router-link :to="{ name: 'Settings' }">
-      <b-button class="">
-        Continue
-        <b-icon class="ml-2" icon="arrow-right-circle-fill" aria-hidden="true"></b-icon>
-      </b-button>
+      <v-btn
+        color="primary"
+        rounded
+        outlined
+        elevation="2"
+      > 
+        Continue 
+        <v-icon
+          right
+          dark
+        >
+          mdi-arrow-right-circle-outline
+        </v-icon>
+      </v-btn>
     </router-link>
   </div>
 </template>

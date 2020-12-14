@@ -76,11 +76,22 @@
         </b-tab>
       </b-tabs>
 
-      <router-link class="mb-3" :to="{ name: 'Game' }">
-        <b-button class="">
+      <router-link :to="{ name: 'Game' }">
+        <v-btn
+          color="primary"
+          rounded
+          outlined
+          elevation="2"
+          class="mb-3"
+        > 
           Start
-          <b-icon class="ml-2" icon="arrow-right-circle-fill" aria-hidden="true"></b-icon>
-        </b-button>
+          <v-icon
+            right
+            dark
+          >
+            mdi-play-circle
+          </v-icon>
+        </v-btn>
       </router-link>
     </b-card>
 

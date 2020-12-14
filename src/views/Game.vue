@@ -4,10 +4,22 @@
 
     <p>reachedShiftTimeLimit {{ reachedShiftTimeLimit }}</p>
     <div>
-      <b-button class="mb-2 mx-1" @click="handleStart"><b-icon class="mr-1" icon="play-fill" aria-hidden="true"></b-icon> Start</b-button>
-      <b-button class="mb-2 mx-1" @click="handlePause"><b-icon class="mr-1" icon="pause-fill" aria-hidden="true"></b-icon>Pause</b-button>
-      <b-button class="mb-2 mx-1" @click="handleReset"><b-icon class="mr-1" icon="arrow-counterclockwise" aria-hidden="true"></b-icon>Reset</b-button>
-      <b-button class="mb-2 mx-1" @click="handleNextPlayer"><b-icon class="mr-1" icon="arrow-right-circle-fill" aria-hidden="true"></b-icon>Next Player</b-button>
+      <v-btn rounded @click="handleStart"> 
+          <v-icon left dark> mdi-play-circle </v-icon>
+          Start
+      </v-btn>
+      <v-btn rounded @click="handlePause"> 
+          <v-icon left dark> mdi-pause-circle </v-icon>
+          Pause
+      </v-btn>
+      <v-btn rounded @click="handleReset"> 
+          <v-icon left dark> mdi-skip-previous-circle </v-icon>
+          Reset
+      </v-btn>
+      <v-btn rounded @click="handleNextPlayer"> 
+          <v-icon left dark> mdi-skip-next-circle </v-icon>
+          Next Player
+      </v-btn>
     </div>
 
     <div>
