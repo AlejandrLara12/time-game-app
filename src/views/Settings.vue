@@ -27,55 +27,50 @@
           <label for="shiftTimeLimitRange">Turn duration {{ shiftTimeLimit }} form {{ formShiftTimeLimit }}</label>
 
           <v-row>
-            <v-col
-              cols="11"
-              sm="5"
+            <v-dialog
+              ref="dialog"
+              v-model="clockModal"
+              :return-value.sync="formShiftTimeLimit"
+              persistent
+              width="290px"
             >
-              <v-dialog
-                ref="dialog"
-                v-model="clockModal"
-                :return-value.sync="formShiftTimeLimit"
-                persistent
-                width="290px"
-              >
-                <template v-slot:activator="{ on, attrs }">
-                  <v-text-field
-                    v-model="formShiftTimeLimit"
-                    label="Shift limit time"
-                    prepend-icon="mdi-clock-time-four-outline"
-                    readonly
-                    v-bind="attrs"
-                    v-on="on"
-                  ></v-text-field>
-                </template>
-                <v-time-picker
-                  v-if="clockModal"
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
                   v-model="formShiftTimeLimit"
-                  full-width
-                  ampm-in-title
-                  format="24hr"
-                  scrollable
-                  use-seconds
-                  @input="handleTimeInput"
+                  label="Shift limit time"
+                  prepend-icon="mdi-clock-time-four-outline"
+                  readonly
+                  v-bind="attrs"
+                  v-on="on"
+                ></v-text-field>
+              </template>
+              <v-time-picker
+                v-if="clockModal"
+                v-model="formShiftTimeLimit"
+                full-width
+                ampm-in-title
+                format="24hr"
+                scrollable
+                use-seconds
+                @input="handleTimeInput"
+              >
+                <v-spacer></v-spacer>
+                <v-btn
+                  text
+                  color="primary"
+                  @click="clockModal = false"
                 >
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    text
-                    color="primary"
-                    @click="clockModal = false"
-                  >
-                    Cancel
-                  </v-btn>
-                  <v-btn
-                    text
-                    color="primary"
-                    @click="$refs.dialog.save(formShiftTimeLimit)"
-                  >
-                    OK
-                  </v-btn>
-                </v-time-picker>
-              </v-dialog>
-            </v-col>
+                  Cancel
+                </v-btn>
+                <v-btn
+                  text
+                  color="primary"
+                  @click="$refs.dialog.save(formShiftTimeLimit)"
+                >
+                  OK
+                </v-btn>
+              </v-time-picker>
+            </v-dialog>
           </v-row>
 
         </b-tab>

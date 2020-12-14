@@ -1,10 +1,8 @@
 <template>
   <div class="game">
     <b-alert :show='reachedShiftTimeLimit' variant="danger">Time is up</b-alert>
-    <p>shiftTimeLimit {{ shiftTimeLimit }} ms</p>
 
     <p>reachedShiftTimeLimit {{ reachedShiftTimeLimit }}</p>
-    <p>duration: {{currentDuration}} ms</p>
     <div>
       <b-button class="mb-2 mx-1" @click="handleStart"><b-icon class="mr-1" icon="play-fill" aria-hidden="true"></b-icon> Start</b-button>
       <b-button class="mb-2 mx-1" @click="handlePause"><b-icon class="mr-1" icon="pause-fill" aria-hidden="true"></b-icon>Pause</b-button>
@@ -12,8 +10,13 @@
       <b-button class="mb-2 mx-1" @click="handleNextPlayer"><b-icon class="mr-1" icon="arrow-right-circle-fill" aria-hidden="true"></b-icon>Next Player</b-button>
     </div>
 
+    <div>
+      <p>active player</p>
+      <pre>{{ activePlayer }}</pre>
+    </div>
+
     <CircularProgress
-      strokeColor="#FF00AA"
+      :strokeColor="activePlayer.color"
       :transitionDuration="100"
       :radius="80"
       :strokeWidth="10"
@@ -26,7 +29,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapMutations, mapGetters } from 'vuex'
 
 // @ is an alias to /src
 import CircularProgress from '@/components/CircularProgress.vue'
@@ -52,15 +55,14 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['addPlayer', 'removePlayer']),
+    ...mapMutations(['removePlayer', 'nextPlayer']),
     handleStart() {
-      const INTERVAL_MS = 100
       this.sw.start()
       this.timerInterval = setInterval(() => {
         // console.log('dur ... ')
         this.currentDuration = this.sw.current
         this.reachedShiftTimeLimit = this.currentDuration > this.shiftTimeLimit
-      }, INTERVAL_MS)
+      }, this.INTERVAL_MS)
     },
     handlePause() {
       this.sw.stop()
@@ -83,6 +85,7 @@ export default {
         // })
         return
       }
+      this.nextPlayer()
       this.sw.reset()
       this.currentDuration = 0
       this.reachedShiftTimeLimit = false
@@ -100,7 +103,10 @@ export default {
     // },
   },
   computed: {
-    ...mapState(['limitOfPlayers', 'players', 'shiftTimeLimit']),
+    ...mapState(['limitOfPlayers', 'players', 'shiftTimeLimit', 'INTERVAL_MS']),
+    ...mapGetters([
+      'activePlayer',
+    ]),
     percentageOfTimeLeft() {
       let percentage = this.currentDuration * 100 / this.shiftTimeLimit
       console.log('perc .. ', percentage)
