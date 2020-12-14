@@ -13,34 +13,17 @@
         <!-- Always use the tag value as the :key, not the index! -->
         <!-- Otherwise screen readers will not read the tag
               additions and removals correctly -->
-        <b-card
+        <v-chip
           v-for="(player, index) in players"
           :key="index"
-          :id="`my-custom-tags-tag_${player.name.replace(/\s/g, '_')}_`"
-          tag="li"
-          class="user-card mt-1 mr-1"
-          :style="{ backgroundColor: player.color }"
-          body-class="py-1 pr-2 text-nowrap"
+          class="ma-2"
+          close
+          :color="player.color"
+          text-color="white"
+          @click:close="handleRemovePlayer(index)"
         >
-          <strong class="player-name-cap">{{ player.name }}</strong>
-          
-          <b-button
-            variant="link"
-            size="sm"
-            @click="handleRemovePlayer(index)"
-            :aria-controls="`my-custom-tags-tag_${player.name.replace(/\s/g, '_')}_`"
-          >
-            <b-icon icon="x-circle" scale="1" variant="default" class="ml-1"></b-icon>
-          </b-button>
-
-          <!-- <b-form-tag
-            @remove="handleRemovePlayer(index)"
-            :key="index"
-            :title="player.name"
-            :variant="tagVariant"
-            class="mr-1"
-          >{{ player.name }}</b-form-tag> -->
-        </b-card>
+          {{ player.name }}
+        </v-chip>
       </ul>
 
       <div class="d-flex flex-row">
