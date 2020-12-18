@@ -76,15 +76,13 @@
         </b-tab>
       </b-tabs>
 
-      <router-link :to="{ name: 'Game' }">
+      <router-link :to="{ name: 'Game' }" class="mb-3">
         <v-btn
           color="primary"
           rounded
           outlined
-          elevation="2"
-          class="mb-3"
         > 
-          Start
+          Ready
           <v-icon
             right
             dark
