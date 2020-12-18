@@ -42,7 +42,6 @@
         </v-card>
       </v-dialog>
 
-      <p>reachedShiftTimeLimit {{ reachedShiftTimeLimit }}</p>
       <div class="mb-3">
         <v-row>
           <v-col cols="6">
@@ -115,6 +114,9 @@ export default {
       timerInterval: null,
     }
   },
+  beforeDestroy() {
+    this.handlePause()
+  },
   methods: {
     ...mapMutations(['removePlayer', 'nextPlayer']),
     handleStart() {
@@ -138,12 +140,6 @@ export default {
     handleNextPlayer() {
       if(!this.sw.is_running){
         this.showAlert = true
-        // this.$bvToast.toast(`Toast ${this.counter} body content`, {
-        //   title: `Toaster ${toaster}`,
-        //   toaster: toaster,
-        //   solid: true,
-        //   appendToast: append
-        // })
         return
       }
       this.nextPlayer()
@@ -158,7 +154,7 @@ export default {
       } else {
         this.handleStart()
       }
-    }
+    },
   },
   computed: {
     ...mapState(['limitOfPlayers', 'players', 'shiftTimeLimit', 'INTERVAL_MS']),
