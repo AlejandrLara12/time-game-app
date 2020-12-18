@@ -1,7 +1,46 @@
 <template>
   <v-container>
     <div class="game">
-      <b-alert :show='reachedShiftTimeLimit' variant="danger">Time is up</b-alert>
+      <v-alert
+        type="info"
+        dismissible
+        text
+        dense
+        v-model="showAlert"
+      >Please start the game first</v-alert>
+
+      <v-dialog
+        v-model="reachedShiftTimeLimit"
+        persistent
+        max-width="290"
+      >
+        <!-- <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            color="primary"
+            dark
+            v-bind="attrs"
+            v-on="on"
+          >
+            Open Dialog
+          </v-btn>
+        </template> -->
+        <v-card>
+          <v-card-title class="headline">
+            Time is up {{activePlayer.name}}
+          </v-card-title>
+          <v-card-text>Good luck for the next one! <br> Wanna go agin?</v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              :color="activePlayer.color"
+              text
+              @click="reachedShiftTimeLimit = false; handleReset();"
+            >
+              Okay
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
 
       <p>reachedShiftTimeLimit {{ reachedShiftTimeLimit }}</p>
       <div class="mb-3">
@@ -68,6 +107,7 @@ export default {
         name: '',
         color: '#1CA085',
       },
+      showAlert: false,
       currentDuration: 0,
       // percentageOfTimeLeft: 0,
       reachedShiftTimeLimit: false,
@@ -97,7 +137,7 @@ export default {
     },
     handleNextPlayer() {
       if(!this.sw.is_running){
-        alert('must start the game first')
+        this.showAlert = true
         // this.$bvToast.toast(`Toast ${this.counter} body content`, {
         //   title: `Toaster ${toaster}`,
         //   toaster: toaster,
@@ -120,16 +160,6 @@ export default {
       }
     }
   },
-  watch: {
-    // 'currentDuration': function(v) {
-    //   // console.log('watch', v)
-    //   let percentage = v * 100 / this.shiftTimeLimit
-    //   console.log('perc .. ', percentage)
-    //   percentage = percentage > 100 ? 100 : percentage
-    //   // return percentage
-    //   this.percentageOfTimeLeft = percentage
-    // },
-  },
   computed: {
     ...mapState(['limitOfPlayers', 'players', 'shiftTimeLimit', 'INTERVAL_MS']),
     ...mapGetters([
@@ -141,6 +171,21 @@ export default {
       percentage = percentage > 100 ? 100 : percentage
       return percentage
     },
+  },
+  watch: {
+    // 'currentDuration': function(v) {
+    //   // console.log('watch', v)
+    //   let percentage = v * 100 / this.shiftTimeLimit
+    //   console.log('perc .. ', percentage)
+    //   percentage = percentage > 100 ? 100 : percentage
+    //   // return percentage
+    //   this.percentageOfTimeLeft = percentage
+    // },
+    reachedShiftTimeLimit(value){
+      if(value){
+        this.handlePause()
+      }
+    }
   }
 }
 </script>
